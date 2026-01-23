@@ -16,6 +16,11 @@ from scripts.news_fetcher.scripts.business_standard_fetcher import (
     fetch_business_standard_time_content
 )
 
+from scripts.news_fetcher.scripts.live_mint_fetcher import (
+    fetch_livemint,
+    fetch_livemint_time_content
+)
+
 # ---------------- CONFIG ----------------
 SLEEP_SECONDS = 5 * 60
 
@@ -77,6 +82,13 @@ def run_forever():
                 fetch_detail=fetch_business_standard_time_content
             )
 
+            # ---- LIVEMINT ----
+            ingest_articles(
+                source_name="livemint",
+                fetch_listing=fetch_livemint,
+                fetch_detail=fetch_livemint_time_content
+            )
+
         except Exception as e:
             logging.critical(f"Cycle failed | {e}")
 
@@ -85,6 +97,7 @@ def run_forever():
 
         logging.info(f"Cycle done. Sleeping {sleep_for:.0f} seconds...\n")
         time.sleep(sleep_for)
+
 
 # ---------------- ENTRY ----------------
 if __name__ == "__main__":

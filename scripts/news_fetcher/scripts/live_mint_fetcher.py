@@ -58,7 +58,7 @@ def fetch_livemint_time_content(url: str):
     soup = BeautifulSoup(r.text, "html.parser")
 
     # ---- TIME ----
-    pub_time = None
+    pub_time, content = None, None
     time_span = soup.find("span", string=re.compile("IST"))
     if time_span:
         try:
@@ -73,13 +73,7 @@ def fetch_livemint_time_content(url: str):
     paragraphs = soup.select("div.storyParagraph p")
     content = "\n".join(p.get_text(strip=True) for p in paragraphs)
 
-    if not content:
-        return None
-
-    return {
-        "content": content,
-        "pub_time": pub_time
-    }
+    return pub_time, content
 
 def live_mint_wrapper(seen_url: set):
     articles = fetch_livemint()

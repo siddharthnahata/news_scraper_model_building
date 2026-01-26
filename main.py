@@ -58,7 +58,7 @@ def ingest_articles(source_name, fetch_listing, fetch_detail, seen_url=seen_url)
                 "tickers": art["tickers"],
                 "tags": art["tags"]
             })
-
+            seen_url.add(art["url"])
             logging.info(f"[{source_name}] Inserted: {art['title'][:80]}")
 
         except Exception as e:

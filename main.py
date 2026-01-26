@@ -20,7 +20,10 @@ from scripts.news_fetcher.scripts.live_mint_fetcher import (
     fetch_livemint,
     fetch_livemint_time_content
 )
-
+from scripts.news_fetcher.scripts.ecomomic_times_fetcher import (
+    fetch_economic_times,
+    fetch_economic_times_time_content
+)
 # ---------------- CONFIG ----------------
 SLEEP_SECONDS = 5 * 60
 
@@ -29,9 +32,10 @@ logging.basicConfig(
     format="%(asctime)s | %(levelname)s | %(message)s"
 )
 
+seen_url = set()
+
 # ---------------- CORE INGESTION ----------------
-def ingest_articles(source_name, fetch_listing, fetch_detail):
-    seen_url = set()  # cycle-level dedup only
+def ingest_articles(source_name, fetch_listing, fetch_detail, seen_url=seen_url):    
 
     articles = generic_news_wrapper(
         seen_url,
@@ -87,6 +91,13 @@ def run_forever():
                 source_name="livemint",
                 fetch_listing=fetch_livemint,
                 fetch_detail=fetch_livemint_time_content
+            )
+
+            # ---- ECONOMICTIMES ----
+            ingest_articles(
+                source_name="economic_times",
+                fetch_listing=fetch_economic_times,
+                fetch_detail=fetch_economic_times_time_content
             )
 
         except Exception as e:

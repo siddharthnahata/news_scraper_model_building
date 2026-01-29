@@ -10,7 +10,7 @@ def last_300():
     cur = conn.cursor(dictionary=True)
 
     cur.execute("""
-        SELECT title, content, source, published_at
+        SELECT title, content, source, published_at, url
         FROM articles
         ORDER BY id DESC
         LIMIT 300

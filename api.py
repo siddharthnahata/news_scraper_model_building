@@ -4,20 +4,20 @@ import psycopg2.extras
 
 app = Flask(__name__)
 
-
-
 @app.route("/last-300")
 def last_300():
     conn = get_conn()
-    with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
-        cur.execute("""
-            SELECT title, content, source, published_at
-            FROM articles
-            ORDER BY id DESC
-            LIMIT 300
-        """)
-        rows = cur.fetchall()
+    cur = conn.cursor(dictionary=True)
 
+    cur.execute("""
+        SELECT title, content, source, published_at
+        FROM articles
+        ORDER BY id DESC
+        LIMIT 300
+    """)
+
+    rows = cur.fetchall()
+    cur.close()
     conn.close()
 
     return jsonify({

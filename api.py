@@ -11,7 +11,7 @@ def last_300():
     with conn.cursor() as cur:
         cur.execute("""
             SELECT *
-            FROM entries
+            FROM articles
             ORDER BY id DESC
             LIMIT 300
         """)

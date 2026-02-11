@@ -109,6 +109,3 @@ def money_control_wrapper(seen_url: set):
             "url": url
         })
     return final_data
-
-
-print(money_control_wrapper(set))

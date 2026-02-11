@@ -11,33 +11,45 @@ def fetch_money_control():
         "https://www.moneycontrol.com/news/business/markets/",
         "https://www.moneycontrol.com/news/business/ipo/"
     ]
+
     articles = []
+
+    headers = {
+        "User-Agent": "Mozilla/5.0"
+    }
+
     for url in urls:
-        r = requests.get(url, timeout=10)
+        try:
+            r = requests.get(url, headers=headers, timeout=10)
+            soup = BeautifulSoup(r.text, "html.parser")
 
-        soup = BeautifulSoup(r.text, "html.parser")
-
-        if soup is None:
-            continue
-        ul = soup.find("ul", id="cagetory")
-        if not ul:
-            continue
-
-        lis = ul.find_all("li", class_="clearfix")
-
-        for li in lis:
-            h2 = li.find("h2")
-            if not h2:
+            ul = soup.find("ul", id="cagetory")
+            if not ul:
                 continue
 
-            a = h2.find("a", href=True)
-            if not a:
-                continue
+            # only real news items
+            lis = ul.find_all("li", class_="clearfix")
 
-            articles.append({
-                "title": a.get_text(strip=True),
-                "url": a["href"]
-            })
+            for li in lis:
+                a_tag = li.find("a", href=True)
+                h2 = li.find("h2")
+
+                if not a_tag or not h2:
+                    continue
+
+                title = h2.get_text(strip=True)
+                link = a_tag["href"]
+
+                # avoid duplicates
+                if not any(article["url"] == link for article in articles):
+                    articles.append({
+                        "title": title,
+                        "url": link
+                    })
+
+        except Exception as e:
+            print(f"Error fetching {url}: {e}")
+            continue
 
     return articles
 
@@ -99,3 +111,4 @@ def money_control_wrapper(seen_url: set):
     return final_data
 
 
+print(money_control_wrapper(set))
